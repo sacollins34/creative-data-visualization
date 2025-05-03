@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>creative-data-visualization</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="creative-data-visualization_files/libs/clipboard/clipboard.min.js"></script>
+<script src="creative-data-visualization_files/libs/quarto-html/quarto.js"></script>
+<script src="creative-data-visualization_files/libs/quarto-html/popper.min.js"></script>
+<script src="creative-data-visualization_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="creative-data-visualization_files/libs/quarto-html/anchor.min.js"></script>
+<link href="creative-data-visualization_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="creative-data-visualization_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="creative-data-visualization_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="creative-data-visualization_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="creative-data-visualization_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">creative-data-visualization</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="creative-data-visualization---colorful-wall-of-drunk-rats-stephen-collins" class="level1">
+<h1><strong>Creative Data Visualization - Colorful Wall of Drunk Rats (Stephen Collins)</strong></h1>
+<p>A .jpeg and .gif version of my plot is saved within the repository.</p>
+<section id="preliminaries" class="level2">
+<h2 class="anchored" data-anchor-id="preliminaries">Preliminaries</h2>
+<p>Loading the packages that I am going to use for this assignment.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sjmisc)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gganimate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>In our lab, we use a binge-like model of ethanol exposure in rats to study the effects of binge drinking on the brain. During each binge experiment, we collect data to track how intoxicated rats become and whether they experience withdrawal. Since we have all this data just sitting around, I got the idea to look at whether there were any sex differences in our model. So, I recently compiled all of the binge data our lab has collected over the years into one dataset. The dataset I am using here includes parameters such as level of intoxication, ethanol dose (g/kg), blood ethanol concentrations (BEC; mg/dL), and withdrawal severity for adult male and female rats.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># loading my rat binge data </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>bf <span class="ot">&lt;-</span> <span class="st">"data/binge_master_file.csv"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>bd <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(bf, <span class="at">col_names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 652 Columns: 49
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: "," chr
+(6): study, binge_location, binge_date, treatment, sex, early_death dbl (43):
+subject_id, weight_day1, weight_day2, weight_day3, weight_day4, me...
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...49`</code></pre>
+</div>
+</div>
+</section>
+<section id="data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="data-wrangling">Data Wrangling</h2>
+<p>The original dataset contains a lot of different variables that are not necessary for this assignment, but this is an example of what is in my dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(bd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 652
+Columns: 49
+$ study           &lt;chr&gt; "srtx1", "srtx1", "srtx1", "srtx1", "srtx1", "srtx1", …
+$ binge_location  &lt;chr&gt; "texas", "texas", "texas", "texas", "texas", "texas", …
+$ binge_date      &lt;chr&gt; "9/1/2019", "9/1/2019", "9/1/2019", "9/1/2019", "9/1/2…
+$ subject_id      &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,…
+$ treatment       &lt;chr&gt; "ethanol", "ethanol", "ethanol", "ethanol", "ethanol",…
+$ sex             &lt;chr&gt; "male", "male", "male", "male", "male", "male", "male"…
+$ early_death     &lt;chr&gt; "no", "no", "no", "no", "yes", "no", "yes", "no", "no"…
+$ weight_day1     &lt;dbl&gt; 351, 350, 306, 337, 340, 331, 338, 354, 329, 342, 357,…
+$ weight_day2     &lt;dbl&gt; 327, 333, 287, 311, NA, 311, 309, 333, 298, 317, 328, …
+$ weight_day3     &lt;dbl&gt; 298, 307, 263, 285, NA, 289, 298, 317, 284, 299, 309, …
+$ weight_day4     &lt;dbl&gt; 298, 300, 252, 277, NA, 274, 284, 303, 278, 285, 298, …
+$ mean_intox      &lt;dbl&gt; 1.3, 1.5, 2.0, 2.0, 0.7, 1.7, 1.5, 1.8, 1.5, 2.4, 1.7,…
+$ dose_day1       &lt;dbl&gt; 15, 15, 14, 14, 13, 14, 14, 14, 14, 13, 14, 14, 13, 14…
+$ dose_day2       &lt;dbl&gt; 10, 12, 5, 7, 0, 9, 12, 9, 8, 8, 8, 10, 3, 9, 10, 11, …
+$ dose_day3       &lt;dbl&gt; 9, 7, 8, 7, 0, 7, 7, 7, 9, 5, 8, 7, 8, 7, 8, 8, 7, 9, …
+$ dose_day4       &lt;dbl&gt; 11.0, 2.9, 2.9, 2.9, NA, 2.9, 2.8, 2.8, 2.8, 2.8, 2.9,…
+$ mean_withdrawal &lt;dbl&gt; 0.3, 0.1, 0.3, 0.3, NA, 0.3, NA, 0.8, 0.7, 1.2, 0.3, 0…
+$ peak_withdrawal &lt;dbl&gt; 2.4, 1.0, 2.4, 3.0, NA, 2.4, NA, 3.0, 3.0, 3.6, 2.4, 2…
+$ mean_bec        &lt;dbl&gt; 205, 419, 368, 416, 404, 412, 374, 332, 322, 498, 416,…
+$ beh_1_1         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ beh_1_2         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ beh_1_3         &lt;dbl&gt; 0, 0, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 0, 0, 0, 3, …
+$ beh_2_1         &lt;dbl&gt; 2, 1, 3, 3, NA, 1, 0, 1, 2, 3, 3, 2, 4, 2, 2, 0, 2, 3,…
+$ beh_2_2         &lt;dbl&gt; 3, 2, 4, 3, NA, 2, 2, 3, 3, 3, 3, 2, 4, 2, 2, 3, 4, 3,…
+$ beh_2_3         &lt;dbl&gt; 1, 1, 3, 2, NA, 3, 1, 2, 2, 1, 1, 1, 4, 2, 1, 1, 2, 2,…
+$ beh_3_1         &lt;dbl&gt; 3, 3, 3, 3, NA, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 3,…
+$ beh_3_2         &lt;dbl&gt; 2, 3, 3, 3, NA, 3, 3, 3, 2, 5, 3, 3, 3, 3, 3, 3, 3, 2,…
+$ beh_3_3         &lt;dbl&gt; 1, 2, 1, 2, NA, 2, 2, 2, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1,…
+$ beh_4_1         &lt;dbl&gt; 2, 3, 3, 3, NA, 1, 2, 2, 1, 4, 2, 3, 2, 3, 4, 4, 2, 1,…
+$ beh_4_2         &lt;dbl&gt; 1, 2, 1, 3, NA, 2, 2, 3, 2, 4, 1, 2, 3, 4, 3, 1, 2, 2,…
+$ beh_4_3         &lt;dbl&gt; 1, 1, 2, 1, NA, 2, NA, 2, 1, 2, 2, 2, 1, 4, 1, 1, 1, 2…
+$ with_10         &lt;dbl&gt; 0, 0, 0, 0, NA, 0, NA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0…
+$ with_11         &lt;dbl&gt; 0, 0, 0, 0, NA, 0, NA, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 0…
+$ with_12         &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, NA, 0.0, NA, 0.0, 0.0, 0.0, 0.0, 0…
+$ with_13         &lt;dbl&gt; 0.0, 0.0, 2.2, 0.0, NA, 0.0, NA, 3.0, 0.0, 0.0, 0.0, 0…
+$ with_14         &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, NA, 0.0, NA, 3.0, 0.0, 0.0, 0.0, 0…
+$ with_15         &lt;dbl&gt; 0, 0, 0, 0, NA, 0, NA, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 0…
+$ with_16         &lt;dbl&gt; 2.4, 0.0, 1.0, 0.0, NA, 0.0, NA, 2.4, 0.0, 3.0, 2.4, 2…
+$ with_17         &lt;dbl&gt; 2.4, 0.0, 2.4, 3.0, NA, 0.0, NA, 2.4, 2.4, 3.6, 0.0, 0…
+$ with_18         &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, NA, 2.4, NA, 2.4, 0.0, 0.0, 2.4, 0…
+$ with_19         &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, NA, 0.0, NA, 0.0, 0.0, 2.4, 0.0, 0…
+$ with_20         &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, NA, 0.0, NA, 0.0, 0.0, 0.0, 0.0, 0…
+$ with_21         &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, NA, 0.0, NA, 0.0, 0.0, 2.4, 0.0, 0…
+$ with_22         &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, NA, 0.0, NA, 0.0, 2.4, 0.0, 0.0, 0…
+$ with_23         &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, NA, 0.0, NA, 0.0, 1.0, 0.0, 0.0, 0…
+$ with_24         &lt;dbl&gt; 0.0, 1.0, 0.0, 0.0, NA, 1.0, NA, 0.0, 0.0, 1.0, 1.0, 0…
+$ with_25         &lt;dbl&gt; 0.0, 0.0, 0.0, 2.0, NA, 2.2, NA, 0.0, 3.0, 0.0, 0.0, 0…
+$ with_26         &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, NA, 0.0, NA, 0.0, 3.0, 2.6, 0.0, 0…
+$ ...49           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…</code></pre>
+</div>
+</div>
+<p>I selected the variables and filtered the data to include only what I was interested in using for the creative data visualization.</p>
+<ul>
+<li><p><strong>study:</strong> What study did they come from</p></li>
+<li><p><strong>binge_location:</strong> Where was the study done (UT Austin or Kentucky)</p>
+<ul>
+<li>I only want rats that were binged at UT Austin</li>
+</ul></li>
+<li><p><strong>treatment:</strong> ethanol, controls, or unbinged Controls (UBC)</p>
+<ul>
+<li>I only want rats that received ethanol</li>
+</ul></li>
+<li><p><strong>sex:</strong> males and females</p></li>
+<li><p><strong>early_death:</strong> Did the animal die during the binge</p>
+<ul>
+<li>I only wanted rats that completed the binge</li>
+</ul></li>
+<li><p><strong>mean_intox:</strong> A mean score showing how intoxicated the rats were across the binge, on a scale from 0 (normal) to 5 (very intoxicated).</p></li>
+<li><p><strong>mean_withdrawal:</strong> A mean score showing withdrawal severity after the binge, on a scale from 0 (normal) to 4 (severe withdrawal).</p></li>
+<li><p><strong>mean_bec:</strong> Their blood ethanol concentration (BEC) during the binge, shown as mg/dL</p></li>
+</ul>
+<p>For this project, I ended up focusing only on BECs because this is the best way to know how drunk a rat really is.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#setting seed because I am going to randomly assign an ID number and placement later, and I wanted to keep it all consistent</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">34</span>) </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># This creates a data frame that has the x and y values for the grid I am making and is based on the total number of rats I have</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># The slice_sample() randomly assigns the x and y value ; where each rat will be placed on my grid </span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>grid_position <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">23</span>, <span class="at">y =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_sample</span>(<span class="at">prop =</span> <span class="dv">1</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating the new data frame that I am planning on using for my plot </span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>bd2 <span class="ot">&lt;-</span> bd <span class="sc">|&gt;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># selecting my variables </span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(study, binge_location, treatment, sex, early_death,mean_intox, mean_withdrawal, mean_bec) <span class="sc">|&gt;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filtering data that I do want to include </span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(binge_location <span class="sc">==</span> <span class="st">"texas"</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>         early_death <span class="sc">==</span> <span class="st">"no"</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>         treatment <span class="sc">==</span> <span class="st">"ethanol"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># I went ahead and removed any rats that would be considered outliers</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    mean_bec <span class="sc">&gt;=</span> <span class="fu">quantile</span>(mean_bec, <span class="fl">0.25</span>) <span class="sc">-</span> <span class="fl">1.5</span> <span class="sc">*</span> <span class="fu">IQR</span>(mean_bec), </span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    mean_bec <span class="sc">&lt;=</span> <span class="fu">quantile</span>(mean_bec, <span class="fl">0.75</span>) <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> <span class="fu">IQR</span>(mean_bec)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># I added extra columns/variables to my data frame</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mean_bec =</span> <span class="fu">round</span>(mean_bec, <span class="at">digits =</span> <span class="dv">0</span>), <span class="co"># I first round my BECs to the nearest whole number</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">id_number =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>(), <span class="at">size =</span> <span class="fu">n</span>(), <span class="at">replace =</span> <span class="cn">FALSE</span>),  <span class="co"># I randomly assigned an ID number</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">bec_grouped =</span> <span class="fu">split_var</span>(mean_bec, <span class="at">n =</span> <span class="dv">10</span>), <span class="co"># I then split my BECs values into 10 roughly equal groups </span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> grid_position<span class="sc">$</span>x, <span class="co"># I then added the randomly assigned x and y values for the grid </span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> grid_position<span class="sc">$</span>y)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="co"># I created another data frame that contains the mean BECs for each of the 10 groups I made above; I used this to help me make my figure legend</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>bd3 <span class="ot">&lt;-</span> bd2 <span class="sc">|&gt;</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(bec_grouped) <span class="sc">|&gt;</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">group_mean =</span> <span class="fu">mean</span>(mean_bec), <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="co">#mean BEC for each 10 of the groups </span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">group_mean =</span> <span class="fu">round</span>(group_mean, <span class="at">digits =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span> <span class="co">#I rounded the BECs to the nearest whole number just incase</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">avg_group_mean =</span> <span class="fu">paste0</span>(<span class="st">"~"</span>, group_mean)) <span class="co">#this added a "~" in front of each number to be shown in the figure legend</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="colorful-wall-of-drunk-rats---stained-glass-panel" class="level2">
+<h2 class="anchored" data-anchor-id="colorful-wall-of-drunk-rats---stained-glass-panel"><strong>Colorful Wall of Drunk Rats - “Stained Glass Panel”</strong></h2>
+<p>Last year, I took a 3-month stained glass course. It was something I had always wanted to try, and it turned out to be one of the coolest hobbies. So, for my creative data visualization, I decided that I should try to combine the binge data I had been working on and some type of stained glass. The idea was to create one stained glass panel (heatmap), where each glass piece (rectangle) represents a random rat from my dataset, which could be a male or female. I divided the rats into 10 roughly equal groups based on their blood ethanol concentrations (BECs), and each group was assigned a color. The figure legend shows each color and the average BEC value associated with each group.</p>
+<p>A .jpeg version of my plot is saved within the repository.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># I used {ggplot2} to make my stained glass panel. </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>bec_stained_glass <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(bd2, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fill =</span> bec_grouped)) <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span> <span class="co"># size of tiles </span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"H"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">labels =</span> bd3<span class="sc">$</span>avg_group_mean) <span class="sc">+</span> <span class="co"># fills in the tiles based on my "fill" variable </span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>(<span class="at">ratio =</span> <span class="dv">8</span><span class="sc">/</span><span class="dv">4</span>) <span class="sc">+</span> <span class="co"># chanages the size of the panel</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span> <span class="co"># gets rid of all the background things that is normally there</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>, <span class="co"># adjusting the titles and figure legend </span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"cm"</span>), </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">36</span>),</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title.position =</span> <span class="st">"plot"</span>) <span class="sc">+</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"BEC (mg/mL)"</span>, <span class="at">title =</span> <span class="st">"Colorful Wall of Drunk Rats"</span>) <span class="sc">+</span> <span class="co">#adds titles </span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="fu">guide_legend</span>(<span class="at">nrow =</span> <span class="dv">1</span>)) <span class="sc">+</span> <span class="co"># helps make the figure legend one line</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fl">0.09</span>)) <span class="sc">+</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fl">0.06</span>)) <span class="co"># more adjusting of the panel to fit in the quarto better</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>bec_stained_glass</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="creative-data-visualization_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" style="width:200.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>I next thought it would be cool if I could make each glass piece (rectangle) slowly appear and stay until the panel was completed. I was able to find a package called {gganimate} that lets you animate your plots - it is pretty cool to be honest. There is also a whole side of R where people make art using R, and it is called Generative Art, which is also cool. Anyway, I used the <strong>transition_time()</strong> and the <strong>shadow_mark()</strong> functions to help me do this. The order of each glass piece (rectangle) appearing is based on the random ID number I assigned earlier. This code block/chunk doesn’t run because it won’t let me render it to HTML, but I included a .gif version of my plot in the Quarto, and I have it saved within the repository.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># I used {ggplot2} to make my stained glass panel. </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>bec_stained_glass2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(bd2, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fill =</span> bec_grouped)) <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span> <span class="co"># size of tiles </span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"H"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">labels =</span> bd3<span class="sc">$</span>avg_group_mean) <span class="sc">+</span> <span class="co"># fills in the files based on a "fill" variable </span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>(<span class="at">ratio =</span> <span class="dv">8</span><span class="sc">/</span><span class="dv">4</span>) <span class="sc">+</span> <span class="co"># chanages the size of the panel</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span> <span class="co"># gets rid of all the background things that is normally there</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>, <span class="co"># adjusting the titles and figure legend </span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"cm"</span>), </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">36</span>),</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title.position =</span> <span class="st">"plot"</span>) <span class="sc">+</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"BEC (mg/mL)"</span>, <span class="at">title =</span> <span class="st">"Colorful Wall of Drunk Rats"</span>) <span class="sc">+</span> <span class="co">#adds titles </span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="fu">guide_legend</span>(<span class="at">nrow =</span> <span class="dv">1</span>)) <span class="sc">+</span> <span class="co"># helps make the figure legend one line</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fl">0.09</span>)) <span class="sc">+</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fl">0.06</span>)) <span class="sc">+</span> <span class="co"># more adjusting of the panel to fit in the quarto better</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transition_time</span>(id_number) <span class="sc">+</span> <span class="co"># adds each tile based on their ID number which was randomly assigned </span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">shadow_mark</span>(<span class="at">past =</span> <span class="cn">TRUE</span>, <span class="at">future =</span> <span class="cn">FALSE</span>) <span class="co">#this keeps the tile that just appeared visible  </span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="fu">animate</span>(bec_stained_glass2, <span class="at">nframes =</span> <span class="dv">184</span>, <span class="at">fps =</span> <span class="fl">2.5</span>, <span class="at">width =</span> <span class="dv">1100</span>, <span class="at">height =</span> <span class="dv">850</span>, <span class="at">renderer =</span> <span class="fu">gifski_renderer</span>())</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="fu">anim_save</span>(<span class="st">"bec_stained_glass2.gif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br>
+A .gif of my animated stained glass panel.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"bec_stained_glass2.gif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="bec_stained_glass2.gif" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
